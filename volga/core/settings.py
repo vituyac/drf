@@ -22,12 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wl=yk&6q-xb_klu73^vc0jflf$!zrb+nj6e71qsatnhq4&7gb_'
+SECRET_KEY = 'django-insecure-mmn!7e$3ra=x-ptn8cls7*g7thqdehw+da_=z19)klsh0%@5@n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False ПРИ ДЕПЛОЕ И СДЕЛАЙ ВОЗВРАТ НА СВАГЕРР В СЛУЧАЕ 404
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 DEBUG = True
+
 ALLOWED_HOSTS = []
 
 
@@ -40,30 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
     'rest_framework',
     'drf_spectacular',
     'Account'
 ]
-
-# Настройки для Django REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # Схема для автоматической генерации API-документации
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-        #'rest_framework.renderers.BrowsableAPIRenderer', чтобы не было API в браузере
-    ]
-}
-
-# Настройки для drf-spectacular
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'User Management API',                               # Название API
-    'DESCRIPTION': 'API для регистрации, получения и удаления пользователей.',  # Описание API
-    'VERSION': '1.0.0',                                           # Версия API
-    'SERVE_INCLUDE_SCHEMA': False,                                # Отключение схемы в ответах API
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,24 +79,30 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # Схема для автоматической генерации API-документации
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer', #чтобы не было API в браузере
+    ]
+}
+
 # DATABASES = {
 #     'default': dj_database_url.config(default='postgres://postgres:postgres@db:5432/postgres')
 # }
 
-# ПОДКЛЮЧЕНИЕ К ЛОКАЛЬНОМУ PostgreSQL
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'test',
-#         'USER': 'postgres',
-#         'PASSWORD': '1234',
-#         'HOST': 'localhost',  
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(default='postgres://postgres:postgres@db:5432/postgres')
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'volga',
+        'USER': 'postgres',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
 
 # DATABASES = {
@@ -125,6 +111,7 @@ DATABASES = {
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -150,12 +137,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
 USE_TZ = True
-
+    
+APPEND_SLASH = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -166,8 +154,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'Account.User'
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -208,3 +194,18 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+AUTH_USER_MODEL = 'Account.User'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'User Management API',                              
+    'DESCRIPTION': 'API для регистрации, получения и удаления пользователей.',
+    'VERSION': '1.0.0',                                           
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True                             
+}
+
+STATIC_URL = 'static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

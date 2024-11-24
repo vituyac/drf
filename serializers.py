@@ -67,7 +67,7 @@ class SimpleSerializer(serializers.Serializer):
 #Связанные объекты
 class AuthorSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    name = serializers.CharField(max_lenght=100)
+    name = serializers.CharField(max_lenght=100) #read_only=True только на вывод
     
 class BookSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -150,3 +150,23 @@ class UserSerializer(serializers.ModelSerializer):
                 "name": instance["name"],
                 "is_admin": self.context.get("is_admin", False),
             }
+            
+#Методы save(), create() и update()
+#В представлении
+#serializer.is_valid(raise_exception=True)
+#serializer.save()
+
+def create(self, validated_date):
+    return User.objects.create(**validated_data)
+
+def update(self, instance, validated_date):
+    instance.title = validated_date.get("title", instance) #и так для всех полей
+    instance.save()
+    return instance
+# def create(self, validated_data):
+#         # Удаляем поле, если оно есть
+#         validated_data.pop('field_to_remove', None)
+#         return User.objects.create(**validated_data)
+
+
+user = serializers.HiddenField(default=serializers.CurrentUserDefault())

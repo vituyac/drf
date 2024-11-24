@@ -1,0 +1,59 @@
+docker run -d -p 80:80 docker/getting-started
+docker info
+docker images --help
+docker ps
+docker stop 5a96b9ac4005
+docker pause
+docker pull python
+docker run python
+docker run -it --name MyPython python
+docker start MyPython
+CTR+D
+
+FROM python:3
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD [ "python", "./your-daemon-or-script.py" ]
+
+FROM python:3
+
+COPY . /python
+
+WORKDIR /python
+
+EXPOSE 8001
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD [ "python", "main.py" ]
+
+docker build .
+docker images
+docker image rm id
+docker run -p 3001:8001 3c670e48b92b
+
+FROM python:3.4
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		postgresql-client \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+COPY . .
+
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+docker-compose.yml
+docker-compose build
+docker-compose up
+
+docker-compose run django django-admin startproject drf .
+docker-compose down
+docker-compose run django python manage.py createsuperuser
+docker-compose run django python manage.py migrate
