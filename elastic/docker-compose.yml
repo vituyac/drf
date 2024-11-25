@@ -1,0 +1,9 @@
+services:
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
